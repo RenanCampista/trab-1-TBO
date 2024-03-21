@@ -1,3 +1,9 @@
+# vscode config
+.vscode
+
+# compiled files
+trab1
+
 # Prerequisites
 *.d
 
