@@ -3,6 +3,7 @@
 
 typedef struct Point Point;
 struct Point {
+    char *id;
     float *coordinate;
     int size;
 };
