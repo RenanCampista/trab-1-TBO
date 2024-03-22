@@ -14,7 +14,7 @@ data_type vector_pop_back(Vector *v);
 void vector_swap(Vector *v, int i, int j);
 void vector_sort(Vector *v);
 int vector_binary_search(Vector *v, data_type val);
-void vector_destroy(Vector *v) ;
+void vector_destroy(Vector *v);
 
 
 #endif // _VECTOR_H_

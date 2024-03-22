@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         line[strcspn(line, "\n")] = 0;
         Point *p = point_read(dimension, line);
         point_print(p);
-        point_destruct(p);
+        point_destroy(p);
     }
     fclose(input);
     free(line);

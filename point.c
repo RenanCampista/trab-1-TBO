@@ -34,7 +34,7 @@ Point *point_read(int size, char *line) {
     return p;
 }
 
-void point_destruct(Point *p) {
+void point_destroy(Point *p) {
     free(p->coordinate);
     free(p);
 }
