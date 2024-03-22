@@ -2,11 +2,6 @@
 #define _POINT_H_
 
 typedef struct Point Point;
-struct Point {
-    char *id;
-    double *coordinate;
-    int size;
-};
 
 Point *point_construct(char *id, int size);
 Point *point_read(int size, char *line);

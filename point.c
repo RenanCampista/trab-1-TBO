@@ -3,6 +3,12 @@
 #include <string.h>
 #include "point.h"
 
+struct Point {
+    char *id;
+    double *coordinate;
+    int size;
+};
+
 Point *point_construct(char *id, int size) {
     Point *p = (Point *) calloc(1, sizeof(Point));
     if (p == NULL)

@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     fseek(input, 0, SEEK_SET);
 
     while((read = getline(&line, &len, input)) != -1) {
-        // Remove o caractere de nova linha (\n) do final da linha
+        // Remove o caractere \n do final da linha
         line[strcspn(line, "\n")] = 0;
         Point *p = point_read(dimension, line);
         point_print(p);
