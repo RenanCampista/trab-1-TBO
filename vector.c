@@ -25,6 +25,11 @@ Vector *vector_construct() {
     return v;
 }
 
+void vector_destroy(Vector *v) {
+    free(v->data);
+    free(v);
+}
+
 int vector_size(Vector *v) {
     return v->size;
 }
@@ -104,7 +109,3 @@ int vector_binary_search(Vector *v, data_type val) {
     return -1;
 }
 
-void vector_destroy(Vector *v) {
-    free(v->data);
-    free(v);
-}

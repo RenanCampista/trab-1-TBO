@@ -13,26 +13,25 @@ struct CartesianPlane {
     // Armazenar a quantidade de grupos?
 };
 
-// Fazer uma função para leitura de pontos
 
-CartesianPlane *cartesian_plane_construct(int dimension) {
+CartesianPlane *cartesian_plane_construct() {
     CartesianPlane *cp = (CartesianPlane *)calloc(1, sizeof(CartesianPlane));
     if (cp == NULL)
         exit(printf("Error: cartesian_plane_construct failed to allocate memory.\n"));
 
     cp->points = vector_construct();
-    cp->dimension = dimension;
     // A matriz deve ser alocada somente após a leitura, após saber a quantidade de pontos (vector_size)
 
     return cp;
 }
 
 void cartesian_plane_destroy(CartesianPlane *cp) {
-    for (int i = 0; i < cp->dimension; i++)
+    for (int i = 0; i < vector_size(cp->points); i++)
         free(cp->euclidean_dist[i]);
     free(cp->euclidean_dist);
     for (int i = 0; i < vector_size(cp->points); i++)
         point_destroy((Point *)vector_get(cp->points, i));
+    vector_destroy(cp->points);
     free(cp);
 }
 
@@ -56,13 +55,10 @@ void cartesian_plane_read(CartesianPlane *cp, FILE *input) {
     while((read = getline(&line, &len, input)) != -1) {
         // Remove o caractere \n do final da linha
         line[strcspn(line, "\n")] = 0;
-        //Pode retirar size da struct point
         Point *p = point_read(cp->dimension, line);
         vector_push_back(cp->points, p);
-        // point_print(p);
-        // point_destroy(p);
     }
-
+    free(line);
     cp->euclidean_dist = (double **)calloc(vector_size(cp->points), sizeof(double *));
     for (int i = 0; i < vector_size(cp->points); i++) 
         cp->euclidean_dist[i] = (double *)calloc(vector_size(cp->points), sizeof(double));
@@ -73,8 +69,17 @@ void cartesian_plane_calculate_distances(CartesianPlane *cp) {
         for (int j = 0; j < i; j++) {
             Point *p1 = (Point *) vector_get(cp->points, i);
             Point *p2 = (Point *) vector_get(cp->points, j);
-            cp->euclidean_dist[i][j] = point_euclidean_distance(p1, p2);
+            cp->euclidean_dist[i][j] = point_euclidean_distance(p1, p2, cp->dimension);
         }
     }
 }
 
+// Debug
+void cartesian_plane_print_distances(CartesianPlane *cp) {
+    for (int i = 0; i < vector_size(cp->points); i++) {
+        for (int j = 0; j < i; j++) {
+            printf("%.2f\t", cp->euclidean_dist[i][j]);
+        }
+        printf("\n");
+    }
+}

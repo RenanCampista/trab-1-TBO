@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//#include <math.h>
 #include "point.h"
 
 struct Point {
     char *id;
     double *coordinate;
-    int size;
 };
 
 Point *point_construct(char *id, int size) {
@@ -14,7 +14,6 @@ Point *point_construct(char *id, int size) {
     if (p == NULL)
         exit(printf("Error: point_construct failed to allocate memory.\n"));
     p->coordinate = (double *) calloc(size, sizeof(double));
-    p->size = size;
     p->id = id;
     return p;
 }
@@ -40,18 +39,19 @@ void point_destroy(Point *p) {
 }
 
 // Debug
-void point_print(Point *p) {
+void point_print(Point *p, int dimension) {
     printf("%s", p->id);
-    for (int i = 0; i < p->size; i++) {
+    for (int i = 0; i < dimension; i++) {
         printf(",%.2f", p->coordinate[i]);
     }
     printf("\n");
 }
 
-double point_euclidean_distance(Point *p1, Point *p2) {
+double point_euclidean_distance(Point *p1, Point *p2, int dimension) {
     double sum = 0;
-    for (int i = 0; i < p1->size; i++) 
+    for (int i = 0; i < dimension; i++) 
         sum += (p1->coordinate[i] - p2->coordinate[i]) * (p1->coordinate[i] - p2->coordinate[i]);
     // sqrt(sum) não é necessário para comparação
+    //return sqrt(sum);
     return sum;
 }

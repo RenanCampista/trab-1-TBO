@@ -5,6 +5,7 @@ typedef void * data_type;
 typedef struct Vector Vector;
 
 Vector *vector_construct();
+void vector_destroy(Vector *v);
 int vector_size(Vector *v);
 data_type vector_get(Vector *v, int i);
 void vector_push_back(Vector *v, data_type val);
@@ -14,7 +15,5 @@ data_type vector_pop_back(Vector *v);
 void vector_swap(Vector *v, int i, int j);
 void vector_sort(Vector *v);
 int vector_binary_search(Vector *v, data_type val);
-void vector_destroy(Vector *v);
-
 
 #endif // _VECTOR_H_

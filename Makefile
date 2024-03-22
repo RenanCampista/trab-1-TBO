@@ -5,4 +5,4 @@ clean:
 run:
 	./trab1
 valgrind:
-	valgrind --track-origins=yes --leak-check=full ./trab1
+	valgrind --track-origins=yes --leak-check=full ./trab1 0.txt 3 saida.txt
