@@ -47,3 +47,11 @@ void point_print(Point *p) {
     }
     printf("\n");
 }
+
+double point_euclidean_distance(Point *p1, Point *p2) {
+    double sum = 0;
+    for (int i = 0; i < p1->size; i++) 
+        sum += (p1->coordinate[i] - p2->coordinate[i]) * (p1->coordinate[i] - p2->coordinate[i]);
+    // sqrt(sum) não é necessário para comparação
+    return sum;
+}
