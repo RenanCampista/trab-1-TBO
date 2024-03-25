@@ -10,32 +10,18 @@
 
 struct Kruskal {
     CartesianPlane *cp;
-    Edge **edges;
+    //Edge **edges;
 };
 
 Kruskal *kruskal_construct(CartesianPlane *cp) {
     Kruskal *k = (Kruskal *)calloc(1, sizeof(Kruskal));
-    k->cp = cp;
-    k->edges = (Edge **)calloc(cartesian_plane_get_number_points(cp) * (cartesian_plane_get_number_points(cp) - 1) / 2, sizeof(Edge *));
-    if (k == NULL || k->edges == NULL)
+    if (k == NULL)
         exit(printf("Error: kruskal_construct failed to allocate memory.\n"));
-
-    int z = 0;
-    for (int i = 0; i < cartesian_plane_get_number_points(cp); i++) {
-        for (int j = 0; j < i; j++) {
-            double distance = cartesian_plane_get_distance(cp, i, j);
-            k->edges[z] = edge_construct(i, j, distance);
-            z++;
-        }
-    }
-
+    k->cp = cp;
     return k;
 }
 
 void kruskal_destroy(Kruskal *k) {
-    for (int i = 0; i < cartesian_plane_get_number_points(k->cp) * (cartesian_plane_get_number_points(k->cp) - 1) / 2; i++)
-        edge_destroy(k->edges[i]);
-    free(k->edges);
     free(k);
 }
 
@@ -61,52 +47,40 @@ void kruskal_union(int *parent, int *sz,int p, int q) {
     
 }
 
-void union_print(int *parent, int n, bool *visited) {
-    for (int i = 0; i < n; i++) {
-        if (!visited[i]) {
-            printf("%d ", i);
-            visited[i] = true;
-            int j = i;
-            while (parent[j] != j) {
-                printf("%d ", parent[j]);
-                visited[parent[j]] = true;
-                j = parent[j];
-            }
-            printf("\n");
+
+void populate_edges_and_parents(int *parent, Edge **edges, Kruskal *k) {
+    int total_points = cartesian_plane_get_number_points(k->cp);
+    int z = 0;
+
+    for (int i = 0; i < total_points; i++) {
+        parent[i] = i;
+        for (int j = 0; j < i; j++) {
+            double distance = cartesian_plane_get_distance(k->cp, i, j);
+            edges[z] = edge_construct(i, j, distance);
+            z++;
         }
     }
+    
+    qsort(edges, z, sizeof(Edge *), edge_compare);
 }
 
-// Essa função será modularizada
-void kruskal_solve(Kruskal *k, int groups) {
-    // Ordenando as arestas de acordo com a distancia (pesos). O numero de arestas eh n*(n-1)/2.
-    qsort(k->edges, cartesian_plane_get_number_points(k->cp) * (cartesian_plane_get_number_points(k->cp) - 1) / 2, sizeof(Edge *), edge_compare);
-
-    // Inicializando os vetores parent, sz e rank. Sera usado para fazer a uniao dos conjuntos. (union-find algorithm)
-    int *parent = (int *)calloc(cartesian_plane_get_number_points(k->cp), sizeof(int));
-    int *sz = (int *)calloc(cartesian_plane_get_number_points(k->cp), sizeof(int));
-    if (parent == NULL || sz == NULL)
-        exit(printf("Error: kruskal_solve failed to allocate memory.\n"));
-
-    for (int i = 0; i < cartesian_plane_get_number_points(k->cp); i++) {
-        parent[i] = i;
-    }
-
+void process_edges(int *parent, int *sz, Edge **edges, Kruskal *k, int groups) {
     /*
-    O loop `while` continua até que o número de arestas seja menor que o número de pontos no plano cartesiano menos o número de grupos. Isso garante que todas as arestas necessárias para conectar todos os pontos sejam consideradas.
-    
-    A cada iteração, uma aresta é selecionada do array de arestas `k->edges[i]` e o índice `i` é incrementado.
+        O loop `while` continua até que o número de arestas seja menor que o número de pontos no plano cartesiano menos o número de grupos. Isso garante que todas as arestas necessárias para conectar todos os pontos sejam consideradas.
+        
+        A cada iteração, uma aresta é selecionada do array de arestas `edges[i]` e o índice `i` é incrementado.
 
-    As funções `kruskal_find` são usadas para encontrar os conjuntos aos quais os pontos de origem (`edge_get_src(edge)`) e destino (`edge_get_dest(edge)`) da aresta pertencem. Isso é feito para verificar se a adição da aresta atual criará um ciclo.
+        As funções `kruskal_find` são usadas para encontrar os conjuntos aos quais os pontos de origem (`edge_get_src(edge)`) e destino (`edge_get_dest(edge)`) da aresta pertencem. Isso é feito para verificar se a adição da aresta atual criará um ciclo.
 
-    Se os pontos de origem e destino pertencerem a conjuntos diferentes (`x != y`), a aresta é adicionada à árvore geradora mínima. Isso é feito pela função `kruskal_union`, que une os dois conjuntos. O número de arestas (`num_edges`) é então incrementado.
+        Se os pontos de origem e destino pertencerem a conjuntos diferentes (`x != y`), a aresta é adicionada à árvore geradora mínima. Isso é feito pela função `kruskal_union`, que une os dois conjuntos. O número de arestas (`num_edges`) é então incrementado.
 
-    O processo é repetido até que todas as arestas necessárias sejam adicionadas à árvore geradora mínima.
+        O processo é repetido até que todas as arestas necessárias sejam adicionadas à árvore geradora mínima.
     */
+    
     int num_edges = 0;
     int i = 0;
     while (num_edges < cartesian_plane_get_number_points(k->cp) - groups) {
-        Edge *edge = k->edges[i];
+        Edge *edge = edges[i];
         i++;
 
         int x = kruskal_find(parent, edge_get_src(edge));
@@ -116,15 +90,21 @@ void kruskal_solve(Kruskal *k, int groups) {
             num_edges++;
         }
     }
+}
 
-    // Daqui em diante é apenas para printar a árvore geradora mínima. Modularizar isso em uma função.
-    bool *visited = (bool *)calloc(cartesian_plane_get_number_points(k->cp), sizeof(bool));
-    for (int i = 0; i < cartesian_plane_get_number_points(k->cp); i++) {
+void print_groups_and_destroy(int *parent, Edge **edges, Kruskal *k) {
+    int total_points = cartesian_plane_get_number_points(k->cp);
+    int total_edges = cartesian_plane_get_number_points(k->cp) * (cartesian_plane_get_number_points(k->cp) - 1) / 2;
+    bool *visited = (bool *)calloc(total_points, sizeof(bool));
+    if (visited == NULL)
+        exit(printf("Error: print_groups_and_destroy failed to allocate memory.\n"));
+
+    for (int i = 0; i < total_points; i++) {
         if (!visited[i]) {
             Point *p = cartesian_plane_get_point(k->cp, i);
             printf("%s", point_get_id(p));
             visited[i] = true;
-            for (int z = i + 1; z < cartesian_plane_get_number_points(k->cp); z++) {
+            for (int z = i + 1; z < total_points; z++) {
                 if(parent[z] == parent[i] && !visited[z]) {
                     Point *p = cartesian_plane_get_point(k->cp, z);
                     printf(", %s", point_get_id(p));
@@ -144,6 +124,29 @@ void kruskal_solve(Kruskal *k, int groups) {
     }
 
     free(parent);
-    free(sz);
     free(visited);
+    for(int i = 0; i < total_edges; i++)
+        edge_destroy(edges[i]);
+    free(edges);
+}
+
+void kruskal_solve(Kruskal *k, int groups) {
+    //O numero de arestas eh n*(n-1)/2.
+    int total_edges = cartesian_plane_get_number_points(k->cp) * (cartesian_plane_get_number_points(k->cp) - 1) / 2;
+    int total_points = cartesian_plane_get_number_points(k->cp);
+
+    Edge **edges = (Edge **)calloc(total_edges, sizeof(Edge *));
+    int *parent = (int *)calloc(total_points, sizeof(int));
+    int *sz = (int *)calloc(total_points, sizeof(int));
+
+    if (edges == NULL || parent == NULL || sz == NULL)
+        exit(printf("Error: kruskal_solve failed to allocate memory.\n"));
+
+    populate_edges_and_parents(parent, edges, k);
+
+    process_edges(parent, sz, edges, k, groups);
+
+    print_groups_and_destroy(parent, edges, k);
+
+    free(sz);
 }
