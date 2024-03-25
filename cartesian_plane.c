@@ -20,7 +20,6 @@ CartesianPlane *cartesian_plane_construct() {
 
     cp->points = vector_construct();
     // A matriz deve ser alocada somente após a leitura, após saber a quantidade de pontos (vector_size)
-
     return cp;
 }
 
@@ -34,13 +33,16 @@ void cartesian_plane_destroy(CartesianPlane *cp) {
     free(cp);
 }
 
-void cartesian_plane_read(CartesianPlane *cp, FILE *input) {
+void cartesian_plane_read(CartesianPlane *cp, char *input_file) {
     char *line = NULL;
     size_t len = 0;
     ssize_t read;
+    FILE *input = fopen(input_file, "r");
+    if (input == NULL)
+        exit(printf("Error: cartesian_plane_read failed to open input file.\n"));
 
     if ((read = getline(&line, &len, input)) == -1)
-        exit(printf("Error: input file is empty.\n"));
+        exit(printf("Error: cartesian_plane_read input file is empty.\n"));
 
     // Remove o caractere de nova linha (\n) do final da linha. Evitar realloc.
     line[strcspn(line, "\n")] = 0;
@@ -58,6 +60,7 @@ void cartesian_plane_read(CartesianPlane *cp, FILE *input) {
         vector_push_back(cp->points, p);
     }
     free(line);
+    fclose(input);
     cp->euclidean_dist = (double **)calloc(vector_size(cp->points), sizeof(double *));
     for (int i = 0; i < vector_size(cp->points); i++) 
         cp->euclidean_dist[i] = (double *)calloc(vector_size(cp->points), sizeof(double));
