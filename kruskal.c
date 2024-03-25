@@ -84,22 +84,13 @@ void kruskal_solve(Kruskal *k, int groups) {
 
     // Inicializando os vetores parent, sz e rank. Sera usado para fazer a uniao dos conjuntos. (union-find algorithm)
     int *parent = (int *)calloc(cartesian_plane_get_number_points(k->cp), sizeof(int));
-    if (parent == NULL)
-        exit(printf("Error: kruskal_solve failed to allocate memory.\n"));
     int *sz = (int *)calloc(cartesian_plane_get_number_points(k->cp), sizeof(int));
-    if (sz == NULL)
+    if (parent == NULL || sz == NULL)
         exit(printf("Error: kruskal_solve failed to allocate memory.\n"));
-    
+
     for (int i = 0; i < cartesian_plane_get_number_points(k->cp); i++) {
         parent[i] = i;
     }
-
-    int *rank = (int *)calloc(cartesian_plane_get_number_points(k->cp), sizeof(int));
-    if (rank == NULL)
-        exit(printf("Error: kruskal_solve failed to allocate memory.\n"));
-
-    int num_edges = 0;
-    int i = 0;
 
     /*
     O loop `while` continua até que o número de arestas seja menor que o número de pontos no plano cartesiano menos o número de grupos. Isso garante que todas as arestas necessárias para conectar todos os pontos sejam consideradas.
@@ -112,6 +103,8 @@ void kruskal_solve(Kruskal *k, int groups) {
 
     O processo é repetido até que todas as arestas necessárias sejam adicionadas à árvore geradora mínima.
     */
+    int num_edges = 0;
+    int i = 0;
     while (num_edges < cartesian_plane_get_number_points(k->cp) - groups) {
         Edge *edge = k->edges[i];
         i++;
@@ -126,40 +119,18 @@ void kruskal_solve(Kruskal *k, int groups) {
 
     // Daqui em diante é apenas para printar a árvore geradora mínima. Modularizar isso em uma função.
     bool *visited = (bool *)calloc(cartesian_plane_get_number_points(k->cp), sizeof(bool));
-
-    for (int i = 0; i < cartesian_plane_get_number_points(k->cp); i++) {
-        printf("%d ", i);
-    }
-    printf("\n");
-    for (int i = 0; i < cartesian_plane_get_number_points(k->cp); i++) {
-        printf("%d ", parent[i]);
-
-        // if (!visited[i]) {
-        //     Point *p = cartesian_plane_get_point(k->cp, i);
-        //     printf("%s", point_get_id(p));
-        //     visited[i] = true;
-        //     int j = i;
-        //     while (parent[j] != j) {
-        //         Point *p = cartesian_plane_get_point(k->cp, parent[j]);
-        //         if (!visited[parent[j]])
-        //             printf(", %s", point_get_id(p));
-        //         visited[parent[j]] = true;
-        //         j = parent[j];
-        //     }
-        //     printf("\n");
-        // }
-    }
-    printf("\n");
-    for (int i = 0; i < cartesian_plane_get_number_points(k->cp); i++) {
-        Point *p = cartesian_plane_get_point(k->cp, i);
-        printf("%s ", point_get_id(p));
-    }
-    printf("\n\n");
     for (int i = 0; i < cartesian_plane_get_number_points(k->cp); i++) {
         if (!visited[i]) {
             Point *p = cartesian_plane_get_point(k->cp, i);
             printf("%s", point_get_id(p));
             visited[i] = true;
+            for (int z = i + 1; z < cartesian_plane_get_number_points(k->cp); z++) {
+                if(parent[z] == parent[i] && !visited[z]) {
+                    Point *p = cartesian_plane_get_point(k->cp, z);
+                    printf(", %s", point_get_id(p));
+                    visited[z] = true;
+                }
+            }
             int j = i;
             while (parent[j] != j) {
                 Point *p = cartesian_plane_get_point(k->cp, parent[j]);
@@ -172,9 +143,7 @@ void kruskal_solve(Kruskal *k, int groups) {
         }
     }
 
-
     free(parent);
-    free(rank);
     free(sz);
     free(visited);
 }
