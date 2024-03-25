@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <math.h>
 #include "point.h"
 
 struct Point {
     char *id;
     double *coordinate;
 };
+
 
 Point *point_construct(char *id, int size) {
     Point *p = (Point *) calloc(1, sizeof(Point));
@@ -53,7 +53,6 @@ double point_euclidean_distance(Point *p1, Point *p2, int dimension) {
     for (int i = 0; i < dimension; i++) 
         sum += (p1->coordinate[i] - p2->coordinate[i]) * (p1->coordinate[i] - p2->coordinate[i]);
     // sqrt(sum) não é necessário para comparação
-    //return sqrt(sum);
     return sum;
 }
 

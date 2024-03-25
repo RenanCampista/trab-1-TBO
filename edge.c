@@ -8,6 +8,7 @@ struct Edge {
     double weight;
 };
 
+
 Edge *edge_construct(int src, int dest, double weight) {
     Edge *e = (Edge *)calloc(1, sizeof(Edge));
     if (e == NULL)

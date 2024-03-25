@@ -1,17 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cartesian_plane.h"
-#include "point.h"
-#include "vector.h"
+#include <stdbool.h>
 #include "kruskal.h"
 #include "edge.h"
-#include <stdbool.h>
+#include "UF.h"
 
 struct Kruskal {
     CartesianPlane *cp;
-    //Edge **edges;
 };
+
 
 Kruskal *kruskal_construct(CartesianPlane *cp) {
     Kruskal *k = (Kruskal *)calloc(1, sizeof(Kruskal));
@@ -24,29 +22,6 @@ Kruskal *kruskal_construct(CartesianPlane *cp) {
 void kruskal_destroy(Kruskal *k) {
     free(k);
 }
-
-int kruskal_find(int *parent, int i) {
-    while (parent[i] != i) {
-        parent[i] = parent[parent[i]];
-        i = parent[i];
-    }
-    return i;
-}
-
-void kruskal_union(int *parent, int *sz,int p, int q) {
-    int i = kruskal_find(parent, p);
-    int j = kruskal_find(parent, q);
-    if (i == j) return;
-    if (sz[i] < sz[j]) {
-        parent[i] = j;
-        sz[j] += sz[i];
-    } else {
-        parent[j] = i;
-        sz[i] += sz[j];
-    }
-    
-}
-
 
 void populate_edges_and_parents(int *parent, Edge **edges, Kruskal *k) {
     int total_points = cartesian_plane_get_number_points(k->cp);
@@ -83,10 +58,10 @@ void process_edges(int *parent, int *sz, Edge **edges, Kruskal *k, int groups) {
         Edge *edge = edges[i];
         i++;
 
-        int x = kruskal_find(parent, edge_get_src(edge));
-        int y = kruskal_find(parent, edge_get_dest(edge));
+        int x = UF_find(parent, edge_get_src(edge));
+        int y = UF_find(parent, edge_get_dest(edge));
         if (x != y) {
-            kruskal_union(parent, sz, x, y);
+            UF_union(parent, sz, x, y);
             num_edges++;
         }
     }

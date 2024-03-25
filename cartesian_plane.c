@@ -8,7 +8,7 @@
 
 struct CartesianPlane {
     Vector *points;
-    int dimension; // Colocando a dimensão pd retirar a variavel size  de Point e assim economizar memória
+    int dimension; 
     double ** euclidean_dist;
 };
 

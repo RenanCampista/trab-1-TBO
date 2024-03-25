@@ -1,6 +1,7 @@
 #if !defined(_CARTESIAN_PLANE_H_)
 #define _CARTESIAN_PLANE_H_
 
+#include <stdio.h>
 #include "point.h"
 typedef struct CartesianPlane CartesianPlane;
 

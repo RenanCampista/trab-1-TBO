@@ -1,5 +1,6 @@
 #if !defined(_KRUSKAL_H_)
 #define _KRUSKAL_H_
+#include "cartesian_plane.h"
 
 typedef struct Kruskal Kruskal;
 
