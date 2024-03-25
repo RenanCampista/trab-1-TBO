@@ -10,7 +10,6 @@ struct CartesianPlane {
     Vector *points;
     int dimension; // Colocando a dimensão pd retirar a variavel size  de Point e assim economizar memória
     double ** euclidean_dist;
-    // Armazenar a quantidade de grupos?
 };
 
 
@@ -82,4 +81,16 @@ void cartesian_plane_print_distances(CartesianPlane *cp) {
         }
         printf("\n");
     }
+}
+
+int cartesian_plane_get_number_points(CartesianPlane *cp) {
+    return vector_size(cp->points);
+}
+
+double cartesian_plane_get_distance(CartesianPlane *cp, int i, int j) {
+    return cp->euclidean_dist[i][j];
+}
+
+Point *cartesian_plane_get_point(CartesianPlane *cp, int i) {
+    return (Point *) vector_get(cp->points, i);
 }

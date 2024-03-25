@@ -108,4 +108,3 @@ int vector_binary_search(Vector *v, data_type val) {
 
     return -1;
 }
-

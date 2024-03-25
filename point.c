@@ -14,7 +14,7 @@ Point *point_construct(char *id, int size) {
     if (p == NULL)
         exit(printf("Error: point_construct failed to allocate memory.\n"));
     p->coordinate = (double *) calloc(size, sizeof(double));
-    p->id = id;
+    p->id = strdup(id);
     return p;
 }
 
@@ -35,6 +35,7 @@ Point *point_read(int size, char *line) {
 
 void point_destroy(Point *p) {
     free(p->coordinate);
+    free(p->id);
     free(p);
 }
 
@@ -54,4 +55,8 @@ double point_euclidean_distance(Point *p1, Point *p2, int dimension) {
     // sqrt(sum) não é necessário para comparação
     //return sqrt(sum);
     return sum;
+}
+
+char *point_get_id(Point *p) {
+    return p->id;
 }
