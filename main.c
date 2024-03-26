@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     FILE *time_file = fopen("runtime.txt", "w");
     if (time_file == NULL)
         exit(printf("Error: could not open runtime file.\n"));
-    fprintf(time_file, "%.3f\n", cpu_time_used);
+    fprintf(time_file, "Program executed in %f seconds\n", cpu_time_used);
     fclose(time_file);
 
     return 0;
