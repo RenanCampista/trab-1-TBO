@@ -24,11 +24,11 @@ CartesianPlane *cartesian_plane_construct() {
 }
 
 void cartesian_plane_destroy(CartesianPlane *cp) {
-    for (int i = 0; i < vector_size(cp->points); i++)
+    for (int i = 0; i < vector_size(cp->points); i++) {
         free(cp->euclidean_dist[i]);
-    free(cp->euclidean_dist);
-    for (int i = 0; i < vector_size(cp->points); i++)
         point_destroy((Point *)vector_get(cp->points, i));
+    }
+    free(cp->euclidean_dist);    
     vector_destroy(cp->points);
     free(cp);
 }

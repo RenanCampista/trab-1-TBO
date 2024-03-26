@@ -32,8 +32,7 @@ void populate_edges_and_parents(int *parent, Edge **edges, Kruskal *k) {
     for (int i = 0; i < total_points; i++) {
         parent[i] = i;
         for (int j = 0; j < i; j++) {
-            double distance = cartesian_plane_get_distance(k->cp, i, j);
-            edges[z] = edge_construct(i, j, distance);
+            edges[z] = edge_construct(i, j, cartesian_plane_get_distance(k->cp, i, j));
             z++;
         }
     }
