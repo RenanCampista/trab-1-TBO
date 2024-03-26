@@ -26,10 +26,7 @@ void edge_destroy(Edge *e) {
 }
 
 int edge_compare(const void *a, const void *b) {
-    Edge *ea = (Edge *)a;
-    Edge *eb = (Edge *)b;
-
-    return (ea->weight > eb->weight) - (ea->weight < eb->weight);
+    return (((Edge *)a)->weight > ((Edge *)b)->weight) - (((Edge *)a)->weight < ((Edge *)b)->weight);
 }
 
 int edge_get_src(Edge *e) {
