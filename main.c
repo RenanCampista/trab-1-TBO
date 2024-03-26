@@ -16,8 +16,7 @@ int main(int argc, char *argv[]) {
     
     CartesianPlane *cp = cartesian_plane_construct();
     cartesian_plane_read(cp, argv[1]);
-    cartesian_plane_calculate_distances(cp);
-
+    
     int groups = atoi(argv[2]);
     if (groups <= 0)
         exit(printf("Error: invalid number of groups.\n"));
