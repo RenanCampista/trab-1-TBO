@@ -25,12 +25,13 @@ void kruskal_destroy(Kruskal *k) {
     free(k);
 }
 
-void populate_edges_and_parents(int *parent, Edge **edges, Kruskal *k) {
+void populate_edges_and_parents(int *parent, int *sz, Edge **edges, Kruskal *k) {
     int total_points = cartesian_plane_get_number_points(k->cp);
     int z = 0;
 
     for (int i = 0; i < total_points; i++) {
         parent[i] = i;
+        sz[i] = 1;
         for (int j = 0; j < i; j++) {
             edges[z] = edge_construct(i, j, cartesian_plane_get_distance(k->cp, i, j));
             z++;
@@ -119,11 +120,15 @@ void kruskal_solve(CartesianPlane *cp, int groups, char *output_file) {
     Edge **edges = (Edge **)calloc(total_edges, sizeof(Edge *));
     int *parent = (int *)calloc(total_points, sizeof(int));
     int *sz = (int *)calloc(total_points, sizeof(int));
+
     if (edges == NULL || parent == NULL || sz == NULL)
         exit(printf("Error: kruskal_solve failed to allocate memory.\n"));
 
-    populate_edges_and_parents(parent, edges, k);
+    populate_edges_and_parents(parent, sz, edges, k);
     process_edges(parent, sz, edges, k, groups);
+    
+    for(int i = 0; i < total_points; i++)
+        printf("%d - %d\n", parent[i], sz[i]);
 
     kruskal_print_groups_and_destroy(k, parent, edges, output_file);
     free(sz);
