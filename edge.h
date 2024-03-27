@@ -3,6 +3,11 @@
 
 typedef struct Edge Edge;
 
+struct Edge {
+    int src, dest;
+    double weight;
+};
+
 Edge *edge_construct(int src, int dest, double weight);
 void edge_destroy(Edge *e);
 int edge_compare(const void *a, const void *b);

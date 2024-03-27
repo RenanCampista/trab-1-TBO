@@ -3,10 +3,10 @@
 #include "edge.h"
 #include "cartesian_plane.h"
 
-struct Edge {
-    int src, dest;
-    double weight;
-};
+// struct Edge {
+//     int src, dest;
+//     double weight;
+// };
 
 
 Edge *edge_construct(int src, int dest, double weight) {
@@ -26,7 +26,7 @@ void edge_destroy(Edge *e) {
 }
 
 int edge_compare(const void *a, const void *b) {
-    return ((*(Edge **)a)->weight > (*(Edge **)b)->weight) - ((*(Edge **)a)->weight < (*(Edge **)b)->weight);
+    return ((Edge *)a)->weight - ((Edge *)b)->weight;
 }
 
 int edge_get_src(Edge *e) {
