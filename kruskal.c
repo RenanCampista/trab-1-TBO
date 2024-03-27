@@ -7,7 +7,6 @@
 #include "UF.h"
 
 typedef struct Kruskal Kruskal;
-
 struct Kruskal {
     CartesianPlane *cp;
 };
@@ -36,7 +35,6 @@ void populate_edges_and_parents(int *parent, int *sz, Edge *edges, Kruskal *k) {
         for (int j = 0; j < i; j++) {
             Point *p1 = cartesian_plane_get_point(k->cp, i);
             Point *p2 = cartesian_plane_get_point(k->cp, j);
-            //edges[z] = edge_construct(i, j, point_euclidean_distance(p1, p2, dimension));
             (&edges[z])->src = i;
             (&edges[z])->dest = j;
             (&edges[z])->weight = point_euclidean_distance(p1, p2, dimension);
@@ -74,9 +72,8 @@ void process_edges(int *parent, int *sz, Edge *edges, Kruskal *k, int groups) {
     }
 }
 
-void kruskal_print_groups_and_destroy(Kruskal *k, int *parent, Edge *edges, char *output_file) {
+void kruskal_print_groups_and_destroy(Kruskal *k, int *parent, char *output_file) {
     int total_points = cartesian_plane_get_number_points(k->cp);
-    //int total_edges = cartesian_plane_get_number_points(k->cp) * (cartesian_plane_get_number_points(k->cp) - 1) / 2;
     bool *visited = (bool *)calloc(total_points, sizeof(bool));
     if (visited == NULL)
         exit(printf("Error: kruskal_print_groups failed to allocate memory.\n"));
@@ -102,32 +99,9 @@ void kruskal_print_groups_and_destroy(Kruskal *k, int *parent, Edge *edges, char
         }
     }
 
-    // Quando sz era sempre zero, tinha que imprimir dessa forma
-    // for (int i = 0; i < total_points; i++) {
-    //     if (!visited[i]) {
-    //         Point *p = cartesian_plane_get_point(k->cp, i);
-    //         fprintf(output, "%s", point_get_id(p));
-    //         visited[i] = true;
-
-    //         int j = i;
-    //         while (parent[j] != j) {
-    //             Point *p = cartesian_plane_get_point(k->cp, parent[j]);
-    //             if (!visited[parent[j]])
-    //                 fprintf(output, ", %s", point_get_id(p));
-    //             visited[parent[j]] = true;
-    //             j = parent[j];
-    //         }
-    //         fprintf(output, "\n");
-    //     }
-    // }
-
     fclose(output);
     free(visited);
     free(parent);
-    // for(int i = 0; i < total_edges; i++)
-    //     edge_destroy(&edges[i]);
-    free(edges);
-
 }
 
 void kruskal_solve(CartesianPlane *cp, int groups, char *output_file) {
@@ -146,7 +120,8 @@ void kruskal_solve(CartesianPlane *cp, int groups, char *output_file) {
     populate_edges_and_parents(parent, sz, edges, k);
     process_edges(parent, sz, edges, k, groups);
     
-    kruskal_print_groups_and_destroy(k, parent, edges, output_file);
+    kruskal_print_groups_and_destroy(k, parent, output_file);
+    free(edges);
     free(sz);
     kruskal_destroy(k);
 }
