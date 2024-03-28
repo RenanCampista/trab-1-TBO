@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include "kruskal.h"
-#include "edge.h"
 #include "UF.h"
 
 typedef struct Kruskal Kruskal;
@@ -11,6 +10,15 @@ struct Kruskal {
     CartesianPlane *cp;
 };
 
+typedef struct Edge Edge;
+struct Edge {
+    int src, dest;
+    double weight;
+};
+
+int edge_compare(const void *a, const void *b) {
+    return ((Edge *)a)->weight - ((Edge *)b)->weight;
+}
 
 Kruskal *kruskal_construct(CartesianPlane *cp) {
     Kruskal *k = (Kruskal *)calloc(1, sizeof(Kruskal));
@@ -60,11 +68,10 @@ void process_edges(int *parent, int *sz, Edge *edges, Kruskal *k, int groups) {
     int num_edges = 0;
     int i = 0;
     while (num_edges < cartesian_plane_get_number_points(k->cp) - groups) {
-        Edge *edge = &edges[i];
         i++;
 
-        int x = UF_find(parent, edge->src);
-        int y = UF_find(parent, edge->dest);
+        int x = UF_find(parent, (&edges[i])->src);
+        int y = UF_find(parent, (&edges[i])->dest);
         if (x != y) {
             UF_union(parent, sz, x, y);
             num_edges++;
@@ -111,6 +118,7 @@ void kruskal_solve(CartesianPlane *cp, int groups, char *output_file) {
     int total_points = cartesian_plane_get_number_points(k->cp);
 
     Edge *edges = (Edge *)calloc(total_edges, sizeof(Edge ));
+
     int *parent = (int *)calloc(total_points, sizeof(int));
     int *sz = (int *)calloc(total_points, sizeof(int));
 
