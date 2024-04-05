@@ -7,5 +7,5 @@ run:
 valgrind:
 	valgrind --track-origins=yes --leak-check=full ./trab1 0.txt 3 saida.txt
 gprof:
-	./trab1 5.txt 3 saida.txt
+	./trab1 5.txt 10 saida.txt
 	gprof trab1 gmon.out > analysis.txt

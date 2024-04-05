@@ -3,11 +3,15 @@
 #include <string.h>
 #include <sys/types.h>
 #include "cartesian_plane.h"
-#include "vector.h"
 #include "point.h"
 
+static const int VECTOR_INIT_SIZE = 100;
+static const int VECTOR_GROWTH_RATE = 150;
+
 struct CartesianPlane {
-    Vector *points;
+    Point **points;
+    int number_points;
+    int allocated_points;
     int dimension; 
 };
 
@@ -17,15 +21,16 @@ CartesianPlane *cartesian_plane_construct() {
     if (cp == NULL)
         exit(printf("Error: cartesian_plane_construct failed to allocate memory.\n"));
 
-    cp->points = vector_construct();
+    cp->allocated_points = VECTOR_INIT_SIZE;
+    cp->points = (Point **)calloc(cp->allocated_points, sizeof(Point *));
+    cp->number_points = 0;
     return cp;
 }
 
 void cartesian_plane_destroy(CartesianPlane *cp) {
-    for (int i = 0; i < vector_size(cp->points); i++) {
-        point_destroy((Point *)vector_get(cp->points, i));
-    }  
-    vector_destroy(cp->points);
+    for (int i = 0; i < cp->number_points; i++)
+        point_destroy(cp->points[i]);
+    free(cp->points);
     free(cp);
 }
 
@@ -53,20 +58,38 @@ void cartesian_plane_read(CartesianPlane *cp, char *input_file) {
         // Remove o caractere \n do final da linha
         line[strcspn(line, "\n")] = 0;
         Point *p = point_read(cp->dimension, line);
-        vector_push_back(cp->points, p);
+
+        if(cp->number_points == cp->allocated_points) {
+            cp->allocated_points *= VECTOR_GROWTH_RATE;
+            cp->points = (Point **)realloc(cp->points, cp->allocated_points * sizeof(Point *));
+        }
+        cp->points[cp->number_points] = p;
+        cp->number_points++;
+
     }
     free(line);
     fclose(input);
 }
 
 int cartesian_plane_get_number_points(CartesianPlane *cp) {
-    return vector_size(cp->points);
+    return cp->number_points;
 }
 
 Point *cartesian_plane_get_point(CartesianPlane *cp, int i) {
-    return (Point *) vector_get(cp->points, i);
+    return cp->points[i];
 }
 
 int cartesian_plane_get_dimension(CartesianPlane *cp) {
     return cp->dimension;
 }
+
+void cartesian_plane_qsort(CartesianPlane *cp) {
+    qsort(cp->points, cp->number_points, sizeof(Point *), point_compare);
+}
+
+// Debug
+// void cartesian_plane_print(CartesianPlane *cp) {
+//     for (int i = 0; i < cp->number_points; i++)
+//         point_print(cp->points[i], cp->dimension);
+// }  
+ 

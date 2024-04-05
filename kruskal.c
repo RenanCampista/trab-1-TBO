@@ -112,6 +112,7 @@ void kruskal_print_groups_and_destroy(Kruskal *k, int *parent, char *output_file
 }
 
 void kruskal_solve(CartesianPlane *cp, int groups, char *output_file) {
+    cartesian_plane_qsort(cp);
     Kruskal *k = kruskal_construct(cp);
     //O numero de arestas eh n*(n-1)/2.
     int total_edges = cartesian_plane_get_number_points(k->cp) * (cartesian_plane_get_number_points(k->cp) - 1) / 2;

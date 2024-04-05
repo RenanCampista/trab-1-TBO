@@ -15,6 +15,7 @@ Point *point_construct(char *id, int size) {
         exit(printf("Error: point_construct failed to allocate memory.\n"));
     p->coordinate = (double *) calloc(size, sizeof(double));
     p->id = strdup(id);
+    p->id[strlen(p->id)] = '\0'; // Remove o caractere de nova linha (\n) do final da linha
     return p;
 }
 
@@ -58,4 +59,10 @@ double point_euclidean_distance(Point *p1, Point *p2, int dimension) {
 
 char *point_get_id(Point *p) {
     return p->id;
+}
+
+int point_compare(const void *a, const void *b) {
+    Point *p1 = *(Point **)a;
+    Point *p2 = *(Point **)b;
+    return strcmp(p1->id, p2->id);
 }
