@@ -53,27 +53,13 @@ void populate_edges_and_parents(int *parent, int *sz, Edge *edges, Kruskal *k) {
 }
 
 void process_edges(int *parent, int *sz, Edge *edges, Kruskal *k, int groups) {
-    /*
-        O loop `while` continua até que o número de arestas seja menor que o número de pontos no plano cartesiano menos o número de grupos. Isso garante que todas as arestas necessárias para conectar todos os pontos sejam consideradas.
-        
-        A cada iteração, uma aresta é selecionada do array de arestas `edges[i]` e o índice `i` é incrementado.
-
-        As funções `kruskal_find` são usadas para encontrar os conjuntos aos quais os pontos de origem (`edge_get_src(edge)`) e destino (`edge_get_dest(edge)`) da aresta pertencem. Isso é feito para verificar se a adição da aresta atual criará um ciclo.
-
-        Se os pontos de origem e destino pertencerem a conjuntos diferentes (`x != y`), a aresta é adicionada à árvore geradora mínima. Isso é feito pela função `kruskal_union`, que une os dois conjuntos. O número de arestas (`num_edges`) é então incrementado.
-
-        O processo é repetido até que todas as arestas necessárias sejam adicionadas à árvore geradora mínima.
-    */
-    
     int num_edges = 0;
     int i = 0;
     while (num_edges < cartesian_plane_get_number_points(k->cp) - groups) {
         i++;
-
-        int x = UF_find(parent, (&edges[i])->src);
-        int y = UF_find(parent, (&edges[i])->dest);
-        if (x != y) {
-            UF_union(parent, sz, x, y);
+        
+        if (!UF_connected(parent, edges[i].src, edges[i].dest)) {
+            UF_union(parent, sz, edges[i].src, edges[i].dest);
             num_edges++;
         }
     }

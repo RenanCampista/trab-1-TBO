@@ -23,4 +23,14 @@ int UF_find(int *parent, int i);
  */
 void UF_union(int *parent, int *sz, int p, int q);
 
+
+/**
+ * @brief Verifica se dois elementos estão no mesmo conjunto.
+ * @param parent O array parent representando os conjuntos disjuntos.
+ * @param p O primeiro elemento.
+ * @param q O segundo elemento.
+ * @return 1 se os elementos estão no mesmo conjunto, 0 caso contrário.
+ */
+int UF_connected(int *parent, int p, int q);
+
 #endif // _UF_H_

@@ -20,3 +20,7 @@ void UF_union(int *parent, int *sz, int p, int q) {
         sz[i] += sz[j];
     }
 }
+
+int UF_connected(int *parent, int p, int q) {
+    return UF_find(parent, p) == UF_find(parent, q);
+}
