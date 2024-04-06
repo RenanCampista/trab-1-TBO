@@ -15,7 +15,6 @@ Point *point_construct(char *id, int size) {
         exit(printf("Error: point_construct failed to allocate memory.\n"));
     p->coordinate = (double *) calloc(size, sizeof(double));
     p->id = strdup(id);
-    p->id[strlen(p->id)] = '\0'; // Remove o caractere de nova linha (\n) do final da linha
     return p;
 }
 

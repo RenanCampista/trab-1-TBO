@@ -55,7 +55,7 @@ Point *cartesian_plane_get_point(CartesianPlane *cp, int i);
 int cartesian_plane_get_dimension(CartesianPlane *cp);
 
 /**
- * @brief Ordena os pontos de um plano cartesiano.
+ * @brief Ordena os pontos de um plano cartesiano de acordo com o ID.
  * @param cp O plano cartesiano a ser ordenado.
  */
 void cartesian_plane_qsort(CartesianPlane *cp);

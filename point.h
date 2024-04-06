@@ -50,7 +50,7 @@ double point_euclidean_distance(Point *p1, Point *p2, int dimension);
 char *point_get_id(Point *p);
 
 /**
- * @brief Compara dois pontos.
+ * @brief Compara o ID de dois pontos.
  * @param a O primeiro ponto.
  * @param b O segundo ponto.
  * @return O resultado da comparação.

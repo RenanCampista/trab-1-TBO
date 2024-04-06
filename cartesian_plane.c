@@ -5,8 +5,8 @@
 #include "cartesian_plane.h"
 #include "point.h"
 
-static const int VECTOR_INIT_SIZE = 100;
-static const int VECTOR_GROWTH_RATE = 150;
+static const int ARRAY_INIT_SIZE = 100;
+static const int ARRAY_GROWTH_RATE = 150;
 
 struct CartesianPlane {
     Point **points;
@@ -21,7 +21,7 @@ CartesianPlane *cartesian_plane_construct() {
     if (cp == NULL)
         exit(printf("Error: cartesian_plane_construct failed to allocate memory.\n"));
 
-    cp->allocated_points = VECTOR_INIT_SIZE;
+    cp->allocated_points = ARRAY_INIT_SIZE;
     cp->points = (Point **)calloc(cp->allocated_points, sizeof(Point *));
     cp->number_points = 0;
     return cp;
@@ -45,8 +45,9 @@ void cartesian_plane_read(CartesianPlane *cp, char *input_file) {
     if ((read = getline(&line, &len, input)) == -1)
         exit(printf("Error: cartesian_plane_read input file is empty.\n"));
 
-    // Remove o caractere de nova linha (\n) do final da linha. Evitar realloc.
+    // Remove o caractere de nova linha (\n) do final da linha. 
     line[strcspn(line, "\n")] = 0;
+    //Encontra o tamanho da dimensão para evitar realloc na leitura dos pontos.
     for (int i = 0; line[i] != '\0'; i++) {
         if (line[i] == ',') 
             cp->dimension++;    
@@ -55,17 +56,16 @@ void cartesian_plane_read(CartesianPlane *cp, char *input_file) {
     fseek(input, 0, SEEK_SET);
 
     while((read = getline(&line, &len, input)) != -1) {
-        // Remove o caractere \n do final da linha
         line[strcspn(line, "\n")] = 0;
         Point *p = point_read(cp->dimension, line);
 
         if(cp->number_points == cp->allocated_points) {
-            cp->allocated_points *= VECTOR_GROWTH_RATE;
+            cp->allocated_points *= ARRAY_GROWTH_RATE;
             cp->points = (Point **)realloc(cp->points, cp->allocated_points * sizeof(Point *));
         }
+        
         cp->points[cp->number_points] = p;
         cp->number_points++;
-
     }
     free(line);
     fclose(input);
