@@ -57,7 +57,6 @@ void process_edges(int *parent, int *sz, Edge *edges, Kruskal *k, int groups) {
     int i = 0;
     while (num_edges < cartesian_plane_get_number_points(k->cp) - groups) {
         i++;
-        
         if (!UF_connected(parent, edges[i].src, edges[i].dest)) {
             UF_union(parent, sz, edges[i].src, edges[i].dest);
             num_edges++;
