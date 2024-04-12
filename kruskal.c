@@ -17,7 +17,11 @@ struct Edge {
 };
 
 int edge_compare(const void *a, const void *b) {
-    return ((Edge *)a)->weight - ((Edge *)b)->weight;
+    Edge *edge1 = (Edge *)a;
+    Edge *edge2 = (Edge *)b;
+    if (edge1->weight < edge2->weight) return -1;
+    else if (edge1->weight > edge2->weight) return 1;
+    else return 0;
 }
 
 Kruskal *kruskal_construct(CartesianPlane *cp) {
@@ -40,8 +44,8 @@ void populate_edges_and_parents(int *parent, int *sz, Edge *edges, Kruskal *k) {
     for (int i = 0; i < total_points; i++) {
         parent[i] = i;
         sz[i] = 1;
+        Point *p1 = cartesian_plane_get_point(k->cp, i);
         for (int j = 0; j < i; j++) {
-            Point *p1 = cartesian_plane_get_point(k->cp, i);
             Point *p2 = cartesian_plane_get_point(k->cp, j);
             (&edges[z])->src = i;
             (&edges[z])->dest = j;

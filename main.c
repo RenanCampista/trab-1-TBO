@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     cartesian_plane_read(cp, argv[1]);
     
     int groups = atoi(argv[2]);
-    if (groups <= 0)
+    if (groups <= 0 || groups > cartesian_plane_get_number_points(cp))
         exit(printf("Error: invalid number of groups.\n"));
   
     kruskal_solve(cp, groups, argv[3]);
