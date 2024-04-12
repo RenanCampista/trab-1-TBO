@@ -8,11 +8,30 @@
 #include "cartesian_plane.h"
 
 /**
- * @brief Resolve o problema de agrupamento utilizando o algoritmo de Kruskal.
- * @param cp Ponteiro para a estrutura que representa o plano cartesiano.
- * @param groups Número de grupos a serem formados.
- * @param output_file Nome do arquivo onde a saída será escrita.
+ * @struct Kruskal
+ * @brief Estrutura para representar o algoritmo de Kruskal.
  */
-void kruskal_solve(CartesianPlane *cp, int groups, char *output_file);
+typedef struct Kruskal Kruskal;
+
+/**
+ * @brief Resolve o problema usando o algoritmo de Kruskal.
+ * @param cp Ponteiro para o plano cartesiano.
+ * @param groups Número de grupos.
+ * @return Ponteiro para a estrutura Kruskal.
+ */
+Kruskal *kruskal_solve(CartesianPlane *cp, int groups);
+
+/**
+ * @brief Imprime os grupos formados pelo algoritmo de Kruskal.
+ * @param k Ponteiro para a estrutura Kruskal.
+ * @param output_file Nome do arquivo de saída.
+ */
+void kruskal_print_groups(Kruskal *k, char *output_file);
+
+/**
+ * @brief Libera a memória alocada para a estrutura Kruskal.
+ * @param k Ponteiro para a estrutura Kruskal.
+ */
+void kruskal_destroy(Kruskal *k);
 
 #endif // _KRUSKAL_H_
