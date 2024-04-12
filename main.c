@@ -3,6 +3,7 @@
 #include <time.h>
 #include "cartesian_plane.h"
 #include "kruskal.h"
+#include "time.h"
 
 int main(int argc, char *argv[]) {
     clock_t start, end;
@@ -15,25 +16,39 @@ int main(int argc, char *argv[]) {
         exit(printf("Error: invalid number of arguments.\n"));
     
     CartesianPlane *cp = cartesian_plane_construct();
+
+    //Tempo de leitura
+    clock_t start_read = clock();
     cartesian_plane_read(cp, argv[1]);
-    
+    clock_t end_read = clock();
+    calcula_tempo(start_read, end_read, TEMPO_LEITURA);
+
     int groups = atoi(argv[2]);
     if (groups <= 0 || groups > cartesian_plane_get_number_points(cp))
         exit(printf("Error: invalid number of groups.\n"));
   
     Kruskal *kr = kruskal_solve(cp, groups);
+
+    //Tempo de escrita
+    clock_t start_write = clock();
     kruskal_print_groups(kr, argv[3]);
+    clock_t end_write = clock();
+    calcula_tempo(start_write, end_write, TEMPO_ESCRITA_SAIDA);
+
+
     kruskal_destroy(kr);
     cartesian_plane_destroy(cp);
 
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    calcula_tempo(start, end, TEMPO_TOTAL);
 
     FILE *time_file = fopen("runtime.txt", "w");
     if (time_file == NULL)
         exit(printf("Error: could not open runtime file.\n"));
     fprintf(time_file, "Program executed in %f seconds\n", cpu_time_used);
     fclose(time_file);
-
+    
+    imprime_tempo();
     return 0;
 }
