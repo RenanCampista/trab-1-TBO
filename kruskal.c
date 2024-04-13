@@ -67,17 +67,18 @@ void populate_edges_and_parents(Edge *edges, Kruskal *k) {
         }
     }
 
+}
+
+void process_edges(Edge *edges, Kruskal *k, int groups) {
+    int total_points = cartesian_plane_get_number_points(k->cp);
     //Tempo para ordenar as arestas
     clock_t start = clock();
     qsort(edges, total_points * (total_points - 1) / 2, sizeof(Edge), edge_compare);
     clock_t end = clock();
     calcula_tempo(start, end, TEMPO_ORDENACAO_DISTANCIAS);
-}
-
-void process_edges(Edge *edges, Kruskal *k, int groups) {
     int num_edges = 0;
     int i = 0;
-    while (num_edges < cartesian_plane_get_number_points(k->cp) - groups) {
+    while (num_edges < total_points - groups) {
         i++;
 
         if (!UF_connected(k->parent, edges[i].src, edges[i].dest)) {
