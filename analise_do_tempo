@@ -1,9 +1,9 @@
-Tempo total bruto:                       6.750766          
-Tempo total :                            5.388776 (100.00 %)
-Diferença do total:                      1.361990
-Tempo leitura do arquivo:                0.010400 (0.19 %)
-Tempo do calculo de distancias:          1.569983 (29.13 %)
-Tempo da ordenação das distancias:       3.779995 (70.15 %)
-Tempo da obtenção da MST:                0.019981 (0.37 %)
-Tempo da formação dos grupos:            0.001946 (0.04 %)
-Tempo de escrita do arquivo de saida:    0.006471 (0.12 %)
+Tempo total bruto:                       6.053096          
+Tempo total :                            4.672884 (100.00 %)
+Diferença do total:                      1.380212
+Tempo leitura do arquivo:                0.007892 (0.17 %)
+Tempo do calculo de distancias:          1.347409 (28.83 %)
+Tempo da ordenação das distancias:       3.300003 (70.62 %)
+Tempo da obtenção da MST:                0.009998 (0.21 %)
+Tempo da formação dos grupos:            0.001387 (0.03 %)
+Tempo de escrita do arquivo de saida:    0.006195 (0.13 %)

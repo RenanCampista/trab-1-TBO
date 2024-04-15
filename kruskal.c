@@ -76,6 +76,8 @@ void process_edges(Edge *edges, Kruskal *k, int groups) {
     qsort(edges, total_points * (total_points - 1) / 2, sizeof(Edge), edge_compare);
     clock_t end = clock();
     calcula_tempo(start, end, TEMPO_ORDENACAO_DISTANCIAS);
+
+    clock_t start2 = clock();
     int num_edges = 0;
     int i = 0;
     while (num_edges < total_points - groups) {
@@ -86,6 +88,8 @@ void process_edges(Edge *edges, Kruskal *k, int groups) {
             num_edges++;
         }
     }
+    clock_t end2 = clock();
+    calcula_tempo(start2, end2, TEMPO_OBTENCAO_MST);
 }
 
 void kruskal_print_groups(Kruskal *k, char *output_file) {
@@ -139,11 +143,7 @@ Kruskal *kruskal_solve(CartesianPlane *cp, int groups) {
 
     populate_edges_and_parents(edges, k);
 
-    //Tempo para obter a arvore geradora minima
-    start = clock();
     process_edges(edges, k, groups);
-    end = clock();
-    calcula_tempo(start, end, TEMPO_OBTENCAO_MST);
     free(edges);
     
     return k;
