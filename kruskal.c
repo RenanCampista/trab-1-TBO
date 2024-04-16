@@ -20,9 +20,9 @@ struct Edge {
 int edge_compare(const void *a, const void *b) {
     Edge *edge1 = (Edge *)a;
     Edge *edge2 = (Edge *)b;
-    if (edge1->weight < edge2->weight) return -1;
-    else if (edge1->weight > edge2->weight) return 1;
-    else return 0;
+    if (edge1->weight < edge2->weight)          return -1;
+    else if (edge1->weight > edge2->weight)     return 1;
+    else                                        return 0;
 }
 
 Kruskal *kruskal_construct(CartesianPlane *cp) {
@@ -67,8 +67,13 @@ void process_edges(Edge *edges, Kruskal *k, int groups) {
     int num_edges = 0;
     int i = 0;
 
+    //Ordena as arestas pelo peso.
     qsort(edges, total_points * (total_points - 1) / 2, sizeof(Edge), edge_compare);
 
+    /*
+    * Selecionar as arestas de menor peso e verificra se a inclusão da aresta não forma um ciclo. 
+    * Se não formar, a aresta é incluída no conjunto de arestas da árvore geradora mínima.
+    */
     while (num_edges < total_points - groups) {
         i++;
         if (!UF_connected(k->parent, edges[i].src, edges[i].dest)) {
@@ -88,14 +93,16 @@ void kruskal_print_groups(Kruskal *k, char *output_file) {
     if (output == NULL)
         exit(printf("Error: kruskal_print_groups failed to open file.\n"));
 
+    // Impressão dos grupos.
     for (int i = 0; i < total_points; i++) {
         int x = UF_find(k->parent, i);
         if (!visited[x]) {
             visited[x] = true;
             Point *p = cartesian_plane_get_point(k->cp, i);
             fprintf(output, "%s", point_get_id(p));
+            // Verifica se há outros pontos no mesmo grupo.
             for (int j = i + 1; j < total_points; j++) {
-                if (UF_find(k->parent, j) == x) {
+                if (UF_find(k->parent, j) == x && !visited[j]) {
                     Point *p = cartesian_plane_get_point(k->cp, j);
                     fprintf(output, ",%s", point_get_id(p));
                     visited[j] = true;
@@ -120,7 +127,10 @@ Kruskal *kruskal_solve(CartesianPlane *cp, int groups) {
     if (edges == NULL)
         exit(printf("Error: kruskal_solve failed to allocate memory.\n"));
 
+    // Popula as arestas e inicializa os pais e tamanhos dos conjuntos com 1.
     populate_edges_and_parents(edges, k);
+
+    // Obtem a árvore geradora mínima.
     process_edges(edges, k, groups);
     free(edges);
     

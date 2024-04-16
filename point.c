@@ -29,7 +29,6 @@ Point *point_read(int size, char *line) {
         token = strtok(NULL, ",");
         i++;
     }
-
     return p;
 }
 
