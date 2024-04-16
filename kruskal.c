@@ -102,7 +102,7 @@ void kruskal_print_groups(Kruskal *k, char *output_file) {
             fprintf(output, "%s", point_get_id(p));
             // Verifica se há outros pontos no mesmo grupo.
             for (int j = i + 1; j < total_points; j++) {
-                if (UF_find(k->parent, j) == x && !visited[j]) {
+                if (UF_find(k->parent, j) == x) {
                     Point *p = cartesian_plane_get_point(k->cp, j);
                     fprintf(output, ",%s", point_get_id(p));
                     visited[j] = true;
