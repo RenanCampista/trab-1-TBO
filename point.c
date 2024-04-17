@@ -25,6 +25,7 @@ Point *point_read(int size, char *line) {
 
     token = strtok(NULL, ",");
     while(token != NULL || i < size) {
+        // Converte a string para double e armazena no vetor de coordenadas.
         p->coordinate[i] = strtod(token, NULL);
         token = strtok(NULL, ",");
         i++;

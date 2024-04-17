@@ -73,6 +73,7 @@ void process_edges(Edge *edges, Kruskal *k, int groups) {
     /*
     * Selecionar as arestas de menor peso e verificra se a inclusão da aresta não forma um ciclo. 
     * Se não formar, a aresta é incluída no conjunto de arestas da árvore geradora mínima.
+    * O algoritmo termina quando o número de arestas for igual ao número de vértices - grupos (k - 1 arestas).
     */
     while (num_edges < total_points - groups) {
         i++;
@@ -93,9 +94,10 @@ void kruskal_print_groups(Kruskal *k, char *output_file) {
     if (output == NULL)
         exit(printf("Error: kruskal_print_groups failed to open file.\n"));
 
-    // Impressão dos grupos.
+    // Impressão dos grupos. Os pontos foram ordenados após a leitura.
     for (int i = 0; i < total_points; i++) {
         int x = UF_find(k->parent, i);
+        // Se o ponto já foi visitado, significa que ele já foi impresso.
         if (!visited[x]) {
             visited[x] = true;
             Point *p = cartesian_plane_get_point(k->cp, i);
@@ -120,19 +122,18 @@ Kruskal *kruskal_solve(CartesianPlane *cp, int groups) {
     cartesian_plane_qsort(cp);
     
     Kruskal *k = kruskal_construct(cp);
-    //O numero de arestas eh n*(n-1)/2.
+    //O numero máximo de arestas é n*(n-1)/2.
     int total_edges = cartesian_plane_get_number_points(k->cp) * (cartesian_plane_get_number_points(k->cp) - 1) / 2;
 
     Edge *edges = (Edge *)calloc(total_edges, sizeof(Edge ));
     if (edges == NULL)
         exit(printf("Error: kruskal_solve failed to allocate memory.\n"));
 
-    // Popula as arestas e inicializa os pais e tamanhos dos conjuntos com 1.
+    // Popula as arestas e inicializa a estrutura de dados Union-Find.
     populate_edges_and_parents(edges, k);
 
     // Obtem a árvore geradora mínima.
     process_edges(edges, k, groups);
     free(edges);
-    
     return k;
 }
